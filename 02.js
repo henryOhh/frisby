@@ -22,23 +22,23 @@ const applyDiscount = (price, discount) => {
 }*/
 
 //2번째 버전 1분 30초
-const  moneyToFloat = str =>
+const moneyToFloat = str =>
   Box(str)
     .map(s => s.replace(/\$/g, ''))
-    .fold(r => parseFloat(r));
+    .map(r => parseFloat(r));
 
-const percentToFloat = str => {
-  Box(str)
-    .map(s => s.replace(/\%/g, ''))
-    .map(r => parseFloat(r))
-    .fold(n => n * 0.01);
-};
+const percentToFloat = str =>
+  Box(str.replace(/\%/g, ''))
+    .map(replaced => parseFloat(replaced))
+    .map(number => number * 0.01);
 
-const applyDiscount = (price, discount) => {
-  const cost = moneyToFloat(price);
-  const savings = percentToFloat(discount);
-  return cost - cost * savings;
-}
+const applyDiscount = (price, discount) =>
+  moneyToFloat(price)
+    .fold(cost =>
+      percentToFloat(discount)
+        .fold(savings =>
+          cost - cost * savings));
+
 
 const result = applyDiscount('$5.00', '20%');
 console.log(result);
